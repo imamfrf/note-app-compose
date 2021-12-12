@@ -5,35 +5,39 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.imamfrf.noteappcompose.db.NoteDatabase
+import com.imamfrf.noteappcompose.model.Note
+import com.imamfrf.noteappcompose.navigation.MainNavigation
 import com.imamfrf.noteappcompose.ui.theme.NoteAppComposeTheme
+import com.imamfrf.noteappcompose.view.NoteItem
+import com.imamfrf.noteappcompose.viewmodel.ViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val noteDao = NoteDatabase.getInstance(this).noteDao
+        val viewModelFactory = ViewModelFactory(noteDao)
+
         setContent {
             NoteAppComposeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    MainNavigation(viewModelFactory = viewModelFactory)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     NoteAppComposeTheme {
-        Greeting("Android")
+        NoteItem(
+            note = Note(title = "Note", content = "Note content", isFavorite = true),
+            onClickNote = {})
     }
 }
